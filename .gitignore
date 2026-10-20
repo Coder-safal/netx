@@ -1,0 +1,41 @@
+# Out-of-source builds (including Debug, Release, sanitizers, and packages)
+/build*/
+/cmake-build*/
+/out/
+
+# Generated files from an accidental in-source CMake build
+/CMakeCache.txt
+/CMakeFiles/
+/Makefile
+/cmake_install.cmake
+/install_manifest.txt
+/CTestTestfile.cmake
+/DartConfiguration.tcl
+/Testing/
+/generated/
+/compile_commands.json
+/CPackConfig.cmake
+/CPackSourceConfig.cmake
+/_CPack_Packages/
+/netx
+/netx_cli_tests
+/netx_dns_tests
+
+# Compiled objects, libraries, and release packages
+*.o
+*.a
+*.so
+*.so.*
+*.deb
+
+# Local configuration and caches
+/CMakeUserPresets.json
+/.cache/
+__pycache__/
+*.py[cod]
+
+# Editor and OS temporary files
+*.swp
+*.swo
+*~
+.DS_Store
