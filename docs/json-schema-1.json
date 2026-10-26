@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "netx report schema 1",
+  "type": "object",
+  "required": ["schema_version", "exit_code", "results"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "exit_code": {"type": "integer", "enum": [0, 1, 3]},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check", "status", "summary", "elapsed_ms", "details", "hints"],
+        "additionalProperties": false,
+        "properties": {
+          "check": {"type": "string"},
+          "status": {"enum": ["PASS", "WARN", "FAIL", "SKIPPED"]},
+          "summary": {"type": "string"},
+          "elapsed_ms": {"type": "number", "minimum": 0},
+          "details": {"type": "object", "additionalProperties": {"type": "string"}},
+          "hints": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
