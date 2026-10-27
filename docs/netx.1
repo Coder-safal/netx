@@ -1,0 +1,46 @@
+.TH NETX 1 "October 2026" "netx" "User Commands"
+.SH NAME
+netx \- Linux network diagnostics
+.SH SYNOPSIS
+.B netx
+.I COMMAND
+.RI [ TARGET ]
+.RI [ OPTIONS ]
+.SH DESCRIPTION
+Commands: dns, http, tls, diagnose, check, tcp, ports, ping, trace.
+Use netx COMMAND --help for syntax. Bare hostnames default to HTTPS port 443.
+Use an explicit http:// URL for plaintext HTTP. IPv6 targets must be bracketed.
+.SH OPTIONS
+.TP
+.B --json
+Print a schema-1 JSON report.
+.TP
+.B --timeout SECONDS
+Timeout per step/probe (1 through 30). DNS defaults to 2 seconds per resolver
+attempt; other network steps default to 5. HTTP bounds the whole redirect chain.
+.TP
+.B -4, -6
+Select an address family (except DNS, which uses --type A or AAAA).
+.TP
+.B --help, --version
+Display help or version.
+.SH EXAMPLES
+.nf
+netx dns safal.me --type MX
+netx http https://safal.me
+netx tls safal.me --chain
+netx diagnose safal.me --json
+netx tcp safal.me --ports 80,443
+netx ports --port 443
+netx ping safal.me --count 4
+netx trace safal.me --timeout 1
+.fi
+.SH EXIT STATUS
+0: all checks pass. 1: a check failed. 2: usage or internal error.
+3: warnings or skipped checks without a failure.
+.SH NOTES
+TLS verifies hostname and trust. Use --ca-file for private CAs.
+HTTP(S) checks ignore proxy environment variables and connect directly.
+Ping and trace use system helpers. Missing or forbidden ICMP uses TCP fallback;
+missing or forbidden traceroute reports SKIPPED. Full options and behavior are
+documented in CLI_SPEC.md distributed with the source.
