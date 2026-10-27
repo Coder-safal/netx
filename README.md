@@ -2,15 +2,74 @@
 
 C++17 network diagnostics for Linux. The current development version is **0.1.0**.
 All nine commands below are implemented. Release publishing and cross-Ubuntu
-verification remain pending; see [ROADMAP.md](ROADMAP.md).
+verification remain pending; see [validation notes](docs/VALIDATION.md).
 
-## Build and test
+## Download and install on Ubuntu 24.04 (amd64)
 
-On Ubuntu:
+Install the `.deb` package to run `netx` from any directory without compiling it.
+The current package targets Ubuntu 24.04 on x86-64/amd64; other distributions,
+Ubuntu versions, and architectures need their own builds.
+
+**The download commands below require the `v0.1.0` GitHub Release and its `.deb`
+asset to be published first.** A public latest release could not be verified
+when these instructions were added. If the download returns 404, use the local
+package or source installation instructions below.
 
 ```sh
 sudo apt-get update
-sudo apt-get install build-essential cmake libcurl4-openssl-dev python3 openssl iputils-ping traceroute
+sudo apt-get install curl
+curl -fLO https://github.com/Coder-safal/netx/releases/download/v0.1.0/netx-0.1.0-Linux.deb
+sudo apt-get install ./netx-0.1.0-Linux.deb
+```
+
+After installation, run:
+
+```sh
+netx --version
+netx --help
+netx dns safal.me
+netx diagnose safal.me
+```
+
+For the system ping and route-probing helpers, also install:
+
+```sh
+sudo apt-get install iputils-ping traceroute
+```
+
+If you already have this project and its built package, install it directly from
+the project directory; no GitHub Release is required:
+
+```sh
+sudo apt-get install ./build/packages/netx-0.1.0-Linux.deb
+netx diagnose safal.me
+```
+
+To update, download a newer compatible `.deb` and install it with the same
+`sudo apt-get install ./PACKAGE.deb` form. To uninstall:
+
+```sh
+sudo apt-get remove netx
+```
+
+### Can I use `sudo apt-get install netx`?
+
+An APT repository or PPA must publish `netx` and be added to your system first.
+This project has not configured one yet. A GitHub Release provides a download;
+it does not register the package with Ubuntu's repositories. For now, use
+`sudo apt-get install ./netx-0.1.0-Linux.deb` after downloading the package.
+The `./` tells APT to install a local file and resolve its dependencies.
+
+## Build and test
+
+To compile from source instead, install the build dependencies, clone the
+repository, and build on Ubuntu:
+
+```sh
+sudo apt-get update
+sudo apt-get install git build-essential cmake libcurl4-openssl-dev python3 openssl iputils-ping traceroute
+git clone https://github.com/Coder-safal/netx.git
+cd netx
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ctest --test-dir build --output-on-failure
@@ -18,7 +77,8 @@ ctest --test-dir build --output-on-failure
 
 Tests use loopback DNS, HTTP, and TLS servers and do not need internet access.
 The test environment must permit local socket creation. Production builds can
-use `-DBUILD_TESTING=OFF` to omit Python and test fixtures.
+use `-DBUILD_TESTING=OFF` to omit Python and test fixtures. If you already have
+the source checkout, skip `git clone` and run the CMake commands from its directory.
 
 ## Commands you can run
 
@@ -67,7 +127,7 @@ there is no insecure verification bypass. Certificates expiring within 30 days
 warn; invalid/expired certificates fail. HTTP(S) checks connect directly and
 ignore proxy environment variables, so they measure the target itself.
 
-## Install or update
+## Install or update from source
 
 ```sh
 cmake --install build --prefix "$HOME/.local"
@@ -84,12 +144,17 @@ To load the completion in the current shell:
 source completions/netx.bash
 ```
 
-Build a Debian package (requires Debian packaging tools):
+Build a Debian package from the project directory (requires Debian packaging
+tools):
 
 ```sh
-cd build
-cpack -G DEB
+cpack --config build/CPackConfig.cmake -G DEB -B build/packages
+sudo apt-get install ./build/packages/netx-0.1.0-Linux.deb
 ```
+
+If you previously installed a user-local build, `command -v netx` shows which
+copy your shell runs. `~/.local/bin/netx` may take precedence over the packaged
+`/usr/bin/netx`; use `/usr/bin/netx --version` to check the packaged copy directly.
 
 ## Project documents
 
@@ -97,6 +162,6 @@ cpack -G DEB
 - [Requirements](REQUIREMENTS.md)
 - [Architecture](ARCHITECTURE.md)
 - [JSON schema 1](docs/json-schema-1.json)
-- [Roadmap and remaining release work](ROADMAP.md)
+- [Validation and remaining release work](docs/VALIDATION.md)
 
 Licensed under the [MIT License](LICENSE).
