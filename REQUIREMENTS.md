@@ -9,7 +9,7 @@ reports and predictable command exits.
 
 The current 0.1.0 development build provides `dns`, `http`, `tls`, `diagnose`,
 `check`, `tcp`, `ports`, `ping`, and `trace`, with shared text/JSON reports.
-Later-roadmap command features were included at the user's request. Publishing,
+Additional diagnostic commands were included at the user's request. Publishing,
 remote CI verification, and external documentation review remain release tasks.
 
 ## 3. Platform
